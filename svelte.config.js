@@ -6,8 +6,13 @@ const config = {
     preprocess: vitePreprocess(),
 
     kit: {
-        // Adapter diubah ke Netlify untuk output build yang optimal
-        adapter: adapter()
+        adapter: adapter({
+            split: false // opsional, bikin satu file bundle
+        }),
+        alias: {
+            $components: 'src/components',
+            $lib: 'src/lib'
+        }
     }
 };
 
