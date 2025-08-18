@@ -17,7 +17,8 @@
   <!-- Kolom Produk -->
   <div class="flex flex-grow flex-col gap-4">
     
-    <div class="flex-shrink-0">
+    <!-- Search -->
+    <div class="flex-shrink-0 px-2 lg:px-0">
       <input
         type="text"
         placeholder="Cari produk atau layanan..."
@@ -26,7 +27,8 @@
       />
     </div>
     
-    <div class="flex-grow overflow-y-auto pr-2">
+    <!-- Grid Produk -->
+    <div class="flex-grow overflow-y-auto px-2 lg:px-0">
       <ProductGrid items={filteredItems} />
     </div>
 
