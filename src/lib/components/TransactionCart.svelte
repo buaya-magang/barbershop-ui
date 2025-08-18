@@ -46,74 +46,55 @@
     // --- AKHIR PERBAIKAN ---
 
     const { value: formValues } = await Swal.fire({
-      // Pengaturan Swal.fire tidak perlu diubah.
-      width: '50rem',
-      showConfirmButton: true,
-      showCancelButton: true,
-      confirmButtonText: 'Done',
-      cancelButtonText: 'Cancel',
-      customClass: {
-        popup: 'p-8 rounded-2xl',
-        confirmButton: 'px-6 py-3 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
-        cancelButton: 'px-6 py-3 text-sm font-semibold text-red-600 bg-red-100 rounded-lg hover:bg-red-200',
-        actions: 'gap-4 w-full flex justify-end mt-8',
-      },
-      buttonsStyling: false,
-      html: `
-        <div class="flex gap-12 text-left">
-          <div class="w-1/2">
-            ${itemsHtml}
-            <hr class="my-4"/>
-            <div class="flex justify-between font-bold text-lg">
-              <span>TOTAL</span>
-              <span>${formatCurrency(total)}</span>
+        width: '50rem',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Done',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          popup: 'p-8 rounded-2xl',
+          confirmButton: 'px-6 py-3 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
+          cancelButton: 'px-6 py-3 text-sm font-semibold text-red-600 bg-red-100 rounded-lg hover:bg-red-200',
+          actions: 'gap-4 w-full flex justify-end mt-8',
+        },
+        buttonsStyling: false,
+        // --- PERBAIKAN UTAMA ADA DI SINI ---
+        html: `
+          <div class="grid grid-cols-2 gap-8 text-left">
+            <div>
+              ${itemsHtml}
+              <hr class="my-4"/>
+              <div class="flex justify-between font-bold text-lg">
+                <span>TOTAL</span>
+                <span>${formatCurrency(total)}</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-6">
+              <div class="flex flex-col">
+                <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
+                <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
+                  <option value="Tunai" selected>Cash</option>
+                  <option value="QRIS">QRIS</option>
+                  <option value="Kartu">Card</option>
+                </select>
+              </div>
+              <div class="flex flex-col">
+                <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
+                <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
+                  <option value="Lunas" selected>Lunas</option>
+                  <option value="Pending">Belum Lunas</option>
+                </select>
+              </div>
             </div>
           </div>
-          <div class="w-1/2 flex flex-col gap-6">
-            <div class="flex flex-col">
-              <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
-              <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                <option value="Tunai" selected>Cash</option>
-                <option value="QRIS">QRIS</option>
-                <option value="Kartu">Card</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
-              <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                <option value="Lunas" selected>Lunas</option>
-                <option value="Pending">Belum Lunas</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      `,
-      preConfirm: () => {
-        const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement).value;
-        const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement).value;
-        return { paymentMethod, paymentStatus };
-      },
-    });
-
-    if (formValues) {
-      const token = localStorage.getItem('accessToken');
-      const baseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
-
-      // --- PERBAIKAN UTAMA ADA DI SINI ---
-
-      // 1. Siapkan array item sesuai skema Pydantic di FastAPI
-      const itemsForApi = $cart.map((item: any) => ({
-        item_id: String(item.id),
-        item_type: item.type, // 'product' atau 'service'
-        quantity: item.quantity
-      }));
-
-      // 2. Buat payload lengkap untuk dikirim ke API
-      const payload = {
-        items: itemsForApi,
-        payment_method: formValues.paymentMethod,
-        payment_status: formValues.paymentStatus
-      };
+        `,
+        // --- AKHIR PERBAIKAN ---
+        preConfirm: () => {
+          const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement).value;
+          const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement).value;
+          return { paymentMethod, paymentStatus };
+        },
+      });
       
       // --- AKHIR PERBAIKAN ---
 
