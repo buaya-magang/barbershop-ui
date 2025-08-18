@@ -35,7 +35,7 @@
 </script>
 
 <div class="flex h-screen w-full flex-col overflow-hidden bg-slate-50">
-  <header class="w-full flex-shrink-0 border-b bg-white p-4 shadow-sm md:px-8">
+  <header class="w-full flex-shrink-0 bg-white p-4 shadow-sm md:px-8">
     <div class="mx-auto flex items-center justify-between">
       <h1 class="text-2xl font-bold text-slate-800">Barbersh.OP</h1>
 
@@ -73,7 +73,6 @@
             </span>
             <div class="flex flex-col text-right">
               <span class="text-sm font-semibold capitalize text-slate-700">{loggedInUser.sub}</span>
-              <span class="text-xs capitalize text-slate-500">{loggedInUser.role}</span>
             </div>
           </div>
         {/if}
