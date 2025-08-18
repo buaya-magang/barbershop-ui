@@ -1,1 +1,0 @@
-<p class="p-8">Mengarahkan...</p>
