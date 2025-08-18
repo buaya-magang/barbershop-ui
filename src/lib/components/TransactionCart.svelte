@@ -140,10 +140,6 @@
 </script>
 
 <div class="flex flex-col h-screen w-[350px] bg-slate-50 border-l border-slate-200 p-4">
-  <div class="flex items-center justify-between p-4 mb-4 font-semibold bg-white rounded-lg">
-    <span>Barberman</span>
-    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-  </div>
   <div class="pr-2 overflow-y-auto flex-grow">
     {#if $cart.length === 0}
       <p class="mt-8 text-center text-slate-400">Keranjang masih kosong</p>
