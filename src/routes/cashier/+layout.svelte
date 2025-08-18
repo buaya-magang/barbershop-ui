@@ -24,7 +24,7 @@
       }
     } else {
       // Jika tidak ada token, paksa kembali ke halaman login
-      goto('/');
+      goto('/login');
     }
   });
 
