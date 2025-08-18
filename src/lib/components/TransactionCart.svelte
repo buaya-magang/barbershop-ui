@@ -178,13 +178,34 @@
 
 <style>
   :global(.swal2-select) {
+    /* Menghilangkan tampilan default browser yang kaku */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+
+    /* Memberi gaya yang konsisten dengan input lain di aplikasi Anda */
+    background-color: #ffffff; /* bg-white */
+    font-size: 1rem; /* text-base */
+    line-height: 1.5rem;
+    color: #334155; /* text-slate-700 */
+    
+    /* Menambahkan ikon panah kustom (ini sudah Anda miliki) */
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 0.5rem center;
     background-repeat: no-repeat;
     background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
+    padding-right: 2.5rem; /* Memberi ruang untuk ikon panah */
+
+    /* Menambahkan transisi agar lebih mulus */
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Efek saat dropdown di-klik (fokus) */
+  :global(.swal2-select:focus) {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    /* Memberi efek cincin ungu yang sama seperti input login Anda */
+    border-color: #8b5cf6; /* a violet color */
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4); 
   }
 </style>
