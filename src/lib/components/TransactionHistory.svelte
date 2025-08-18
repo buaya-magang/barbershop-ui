@@ -17,17 +17,20 @@
     }).format(value);
   }
 
-  function formatDate(dateString: string) {
-    try {
-      return new Intl.DateTimeFormat("id-ID", {
-        dateStyle: "medium",
-        timeStyle: "short",
-        timeZone: "Asia/Jakarta"
-      }).format(new Date(dateString));
-    } catch (e) {
-      return "Format tanggal salah";
+    function formatDate(dateString: string) {
+      try {
+        const date = new Date(dateString);
+
+        return new Intl.DateTimeFormat("id-ID", {
+          dateStyle: "medium",
+          timeStyle: "short",
+          timeZone: "Asia/Jakarta", // selalu paksa WIB
+        }).format(date);
+      } catch (e) {
+        return "Format tanggal salah";
+      }
     }
-  }
+
 </script>
 
 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
