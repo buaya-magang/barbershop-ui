@@ -37,60 +37,64 @@
       .join('');
 
       const { value: formValues } = await Swal.fire({
-        width: '52rem', // lebih lebar dari sebelumnya
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: 'Done',
-        cancelButtonText: 'Cancel',
-        customClass: {
-          popup: 'p-8 rounded-2xl shadow-lg',
-          actions: 'gap-4 w-full flex justify-center pt-6', 
-          confirmButton:
-            'px-8 py-3 text-sm font-bold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
-          cancelButton:
-            'px-8 py-3 text-sm font-bold text-red-600 bg-red-100 rounded-lg hover:bg-red-200'
-        },
-        buttonsStyling: false,
-        html: `
-          <div class="border-b border-slate-200 pb-6" style="max-height:70vh; overflow-y:auto;">
-            <div class="grid grid-cols-2 gap-8 text-left">
-              <div class="flex flex-col">
-                <div class="flex-grow space-y-3 pr-4" style="max-height: 350px; overflow-y: auto;">
-                  ${itemsHtml}
-                </div>
-                <hr class="my-4"/>
-                <div class="flex justify-between text-lg font-bold text-slate-800">
-                  <span>TOTAL</span>
-                  <span>${formatCurrency(total)}</span>
-                </div>
+          width: '42rem',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Done',
+          cancelButtonText: 'Cancel',
+          customClass: {
+              popup: 'p-8 rounded-2xl shadow-lg',
+              // Memberi jarak atas dari garis pemisah
+              actions: 'gap-4 w-full flex justify-center pt-6', 
+              confirmButton:
+                  'px-8 py-3 text-sm font-bold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
+              cancelButton:
+                  'px-8 py-3 text-sm font-bold text-red-600 bg-red-100 rounded-lg hover:bg-red-200'
+          },
+          buttonsStyling: false,
+          // --- PERBAIKAN UTAMA PADA STRUKTUR HTML ---
+          html: `
+              <div class="border-b border-slate-200 pb-6">
+                  <div class="grid grid-cols-2 gap-8 text-left">
+                      <div class="flex flex-col">
+                          <div class="flex-grow space-y-3 pr-4" style="max-height: 250px; overflow-y: auto;">
+                              ${itemsHtml}
+                          </div>
+                          <hr class="my-4"/>
+                          <div class="flex justify-between text-lg font-bold text-slate-800">
+                              <span>TOTAL</span>
+                              <span>${formatCurrency(total)}</span>
+                          </div>
+                      </div>
+                      <div class="flex flex-col gap-6">
+                        <div class="flex flex-col">
+                          <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
+                          <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select" style="margin-top:0;margin-left:0;">
+                            <option value="Tunai" selected>Cash</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Kartu">Card</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col">
+                          <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
+                          <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select" style="margin-top:0;margin-left:0;">
+                            <option value="Lunas" selected>Lunas</option>
+                            <option value="Pending">Belum Lunas</option>
+                          </select>
+                        </div>
+                      </div>
+                  </div>
               </div>
-              <div class="flex flex-col gap-6">
-                <div class="flex flex-col">
-                  <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
-                  <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                    <option value="Tunai" selected>Cash</option>
-                    <option value="QRIS">QRIS</option>
-                    <option value="Kartu">Card</option>
-                  </select>
-                </div>
-                <div class="flex flex-col">
-                  <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
-                  <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                    <option value="Lunas" selected>Lunas</option>
-                    <option value="Pending">Belum Lunas</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        `,
-        preConfirm: () => {
-          const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement).value;
-          const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement).value;
-          return { paymentMethod, paymentStatus };
-        }
+            `,
+          // --- AKHIR PERBAIKAN ---
+          preConfirm: () => {
+              const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement)
+                  .value;
+              const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement)
+                  .value;
+              return { paymentMethod, paymentStatus };
+          }
       });
-
 
     if (formValues) {
       const token = localStorage.getItem('accessToken');
