@@ -7,8 +7,10 @@
   export let data: PageData;
 </script>
 
-<div class="grid h-full grid-cols-1 gap-6 lg:grid-cols-3">
-  <div class="flex flex-col gap-4 lg:col-span-2">
+<div class="flex h-full w-full flex-row gap-6">
+  
+  <div class="flex flex-grow flex-col gap-4">
+    
     <div class="flex-shrink-0">
       <input
         type="text"
@@ -17,12 +19,14 @@
       />
     </div>
     
-    <div class="flex-grow overflow-y-auto">
+    <div class="flex-grow overflow-y-auto pr-2">
       <ProductGrid items={data.items} />
     </div>
+
   </div>
 
-  <aside class="flex-shrink-0 lg:col-span-1">
+  <aside class="w-[350px] flex-shrink-0">
     <TransactionCart />
   </aside>
+
 </div>
