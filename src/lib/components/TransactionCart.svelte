@@ -23,6 +23,8 @@
       return;
     }
 
+    // --- PENYEMPURNAAN KECIL ---
+    // Tombol minus dihapus dari HTML modal karena tidak fungsional.
     const itemsHtml = $cart
       .map(
         (item: any) => `
@@ -35,9 +37,10 @@
       `
       )
       .join('');
+    // --- AKHIR PENYEMPURNAAN ---
 
     const { value: formValues } = await Swal.fire({
-      width: '50rem',
+      width: '36rem', // Menggunakan lebar yang sudah kita perbaiki
       showConfirmButton: true,
       showCancelButton: true,
       confirmButtonText: 'Done',
@@ -49,9 +52,8 @@
         actions: 'gap-4 w-full flex justify-end mt-8',
       },
       buttonsStyling: false,
-      // --- PERBAIKAN LAYOUT HTML DI SINI ---
       html: `
-        <div class="grid grid-cols-2 gap-8 text-left">
+        <div class="w-full text-left">
           <div>
             ${itemsHtml}
             <hr class="my-4"/>
@@ -60,26 +62,25 @@
               <span>${formatCurrency(total)}</span>
             </div>
           </div>
-          <div class="flex flex-col gap-6">
-            <div class="flex flex-col">
-              <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
-              <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                <option value="Tunai" selected>Cash</option>
-                <option value="QRIS">QRIS</option>
-                <option value="Kartu">Card</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
-              <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                <option value="Lunas" selected>Lunas</option>
-                <option value="Pending">Belum Lunas</option>
-              </select>
-            </div>
+          <div class="mt-6 flex flex-col gap-4">
+              <div>
+                <label for="swal-payment-method" class="mb-2 block font-semibold text-slate-700">Metode Pembayaran</label>
+                <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
+                  <option value="Cash" selected>Cash</option>
+                  <option value="QRIS">QRIS</option>
+                  <option value="Card">Card</option>
+                </select>
+              </div>
+              <div>
+                <label for="swal-payment-status" class="mb-2 block font-semibold text-slate-700">Status Pembayaran</label>
+                <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
+                  <option value="Lunas" selected>Lunas</option>
+                  <option value="Pending">Belum Lunas</option>
+                </select>
+              </div>
           </div>
         </div>
       `,
-      // --- AKHIR PERBAIKAN ---
       preConfirm: () => {
         const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement).value;
         const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement).value;
@@ -88,6 +89,7 @@
     });
 
     if (formValues) {
+      // Sisa kode Anda sudah benar
       const token = localStorage.getItem('accessToken');
       const baseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 
@@ -107,7 +109,7 @@
         const response = await fetch(`${baseUrl}/transactions/`, {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
@@ -117,7 +119,6 @@
           Swal.fire('Berhasil!', 'Transaksi telah berhasil disimpan.', 'success');
           cart.reset();
           await invalidateAll();
-
         } else {
           const errorData = await response.json();
           let errorHtml = 'Gagal menyimpan transaksi.';
@@ -139,42 +140,7 @@
 </script>
 
 <div class="flex h-full flex-col border-l border-slate-200 bg-slate-50 p-4">
-  <div class="flex-grow overflow-y-auto pr-2">
-    {#if $cart.length === 0}
-      <p class="mt-8 text-center text-slate-400">Keranjang masih kosong</p>
-    {:else}
-      {#each $cart as item (item.id)}
-        <div class="mb-4 flex items-center justify-between">
-          <div class="flex flex-col">
-            <span class="font-medium text-slate-800">{item.name}</span>
-            <span class="text-sm text-slate-500"
-              >{item.quantity} x {formatCurrency(item.price)}</span
-            >
-          </div>
-          <button
-            class="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 font-bold text-red-500 transition hover:bg-red-200"
-            on:click={() => cart.removeItem(item.id)}
-          >
-            -
-          </button>
-        </div>
-      {/each}
-    {/if}
   </div>
-  <div class="mt-auto border-t border-slate-200 pt-4">
-    <div class="mb-4 flex items-center justify-between">
-      <span class="text-lg font-bold text-slate-800">TOTAL</span>
-      <span class="text-lg font-bold text-slate-800">{formatCurrency(total)}</span>
-    </div>
-    <button
-      class="w-full rounded-lg bg-violet-600 p-4 font-bold text-white transition hover:bg-violet-700 disabled:bg-slate-400"
-      on:click={handleTransaction}
-      disabled={$cart.length === 0}
-    >
-      TRANSAKSI
-    </button>
-  </div>
-</div>
 
 <style>
   :global(.swal2-select) {
