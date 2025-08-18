@@ -66,23 +66,22 @@
                               <span>${formatCurrency(total)}</span>
                           </div>
                       </div>
-
-                      <div class="flex flex-col gap-6 pt-1">
-                          <div>
-                              <label for="swal-payment-method" class="mb-2 block font-semibold text-slate-700">Metode Pembayaran</label>
-                              <select id="swal-payment-method" class="w-full rounded-lg border border-slate-300 p-3 swal2-select">
-                                  <option value="Cash" selected>Cash</option>
-                                  <option value="QRIS">QRIS</option>
-                                  <option value="Card">Card</option>
-                              </select>
-                          </div>
-                          <div>
-                              <label for="swal-payment-status" class="mb-2 block font-semibold text-slate-700">Status Pembayaran</label>
-                              <select id="swal-payment-status" class="w-full rounded-lg border border-slate-300 p-3 swal2-select">
-                                  <option value="Lunas" selected>Lunas</option>
-                                  <option value="Pending">Belum Lunas</option>
-                              </select>
-                          </div>
+                      <div class="flex flex-col gap-6">
+                        <div class="flex flex-col">
+                          <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
+                          <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select" style="margin-top:0;margin-left:0;">
+                            <option value="Tunai" selected>Cash</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Kartu">Card</option>
+                          </select>
+                        </div>
+                        <div class="flex flex-col">
+                          <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
+                          <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select" style="margin-top:0;margin-left:0;">
+                            <option value="Lunas" selected>Lunas</option>
+                            <option value="Pending">Belum Lunas</option>
+                          </select>
+                        </div>
                       </div>
                   </div>
               </div>
