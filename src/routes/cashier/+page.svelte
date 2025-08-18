@@ -27,7 +27,9 @@
 
   <!-- Sidebar / Cart -->
   <aside class="w-full lg:w-[350px] flex-shrink-0">
-    <TransactionCart />
+    <div class="sticky top-4">
+      <TransactionCart />
+    </div>
   </aside>
 
 </div>
