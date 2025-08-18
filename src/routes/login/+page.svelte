@@ -117,7 +117,7 @@
         </div>
 
         {#if errorMessage}
-          <div use:viewport class="fade-in-up p-3 -my-2 text-sm text-center text-red-800 bg-red-100 rounded-lg">
+          <div use:viewport class="fade-in-up -my-2 text-sm text-center font-medium text-red-600">
             {errorMessage}
           </div>
         {/if}
