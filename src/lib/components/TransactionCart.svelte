@@ -35,55 +35,59 @@
       `
       )
       .join('');
-      
+
       const { value: formValues } = await Swal.fire({
-          width: '42rem', // Sedikit lebih ramping agar pas
+          width: '42rem',
           showConfirmButton: true,
           showCancelButton: true,
           confirmButtonText: 'Done',
           cancelButtonText: 'Cancel',
           customClass: {
               popup: 'p-8 rounded-2xl shadow-lg',
-              // Mengubah posisi tombol menjadi di tengah
-              actions: 'gap-4 w-full flex justify-center mt-8', 
+              // Memberi jarak atas dari garis pemisah
+              actions: 'gap-4 w-full flex justify-center pt-6', 
               confirmButton:
                   'px-8 py-3 text-sm font-bold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
               cancelButton:
                   'px-8 py-3 text-sm font-bold text-red-600 bg-red-100 rounded-lg hover:bg-red-200'
           },
           buttonsStyling: false,
+          // --- PERBAIKAN UTAMA PADA STRUKTUR HTML ---
           html: `
-              <div class="grid grid-cols-2 gap-8 text-left border-b pb-6">
-                <div class="flex flex-col">
-                  <div class="flex-grow space-y-3 pr-4" style="max-height: 250px; overflow-y: auto;">
-                    ${itemsHtml}
-                  </div>
-                  <hr class="my-4"/>
-                  <div class="flex justify-between text-lg font-bold text-slate-800">
-                    <span>TOTAL</span>
-                    <span>${formatCurrency(total)}</span>
-                  </div>
-                </div>
+              <div class="border-b border-slate-200 pb-6">
+                  <div class="grid grid-cols-2 gap-8 text-left">
+                      <div class="flex flex-col">
+                          <div class="flex-grow space-y-3 pr-4" style="max-height: 250px; overflow-y: auto;">
+                              ${itemsHtml}
+                          </div>
+                          <hr class="my-4"/>
+                          <div class="flex justify-between text-lg font-bold text-slate-800">
+                              <span>TOTAL</span>
+                              <span>${formatCurrency(total)}</span>
+                          </div>
+                      </div>
 
-                <div class="flex flex-col gap-6 pt-1">
-                    <div>
-                      <label for="swal-payment-method" class="mb-2 block font-semibold text-slate-700">Metode Pembayaran</label>
-                      <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                        <option value="Cash" selected>Cash</option>
-                        <option value="QRIS">QRIS</option>
-                        <option value="Card">Card</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label for="swal-payment-status" class="mb-2 block font-semibold text-slate-700">Status Pembayaran</label>
-                      <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                        <option value="Lunas" selected>Lunas</option>
-                        <option value="Pending">Belum Lunas</option>
-                      </select>
-                    </div>
-                </div>
+                      <div class="flex flex-col gap-6 pt-1">
+                          <div>
+                              <label for="swal-payment-method" class="mb-2 block font-semibold text-slate-700">Metode Pembayaran</label>
+                              <select id="swal-payment-method" class="w-full rounded-lg border border-slate-300 p-3 swal2-select">
+                                  <option value="Cash" selected>Cash</option>
+                                  <option value="QRIS">QRIS</option>
+                                  <option value="Card">Card</option>
+                              </select>
+                          </div>
+                          <div>
+                              <label for="swal-payment-status" class="mb-2 block font-semibold text-slate-700">Status Pembayaran</label>
+                              <select id="swal-payment-status" class="w-full rounded-lg border border-slate-300 p-3 swal2-select">
+                                  <option value="Lunas" selected>Lunas</option>
+                                  <option value="Pending">Belum Lunas</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
               </div>
             `,
+          // --- AKHIR PERBAIKAN ---
           preConfirm: () => {
               const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement)
                   .value;
