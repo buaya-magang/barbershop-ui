@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TransactionCart from '$lib/components/TransactionCart.svelte';
   import TransactionHistory from '$lib/components/TransactionHistory.svelte';
   import { onMount } from 'svelte';
 
@@ -17,7 +16,8 @@
         const data = await response.json();
         transactions = data.sort(
           (a: any, b: any) =>
-            new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+            new Date(b.transaction_date).getTime() -
+            new Date(a.transaction_date).getTime()
         );
       } else {
         transactions = [];
@@ -32,9 +32,14 @@
 
 <!-- Layout.svelte sudah handle header & main wrapper -->
 <div class="flex h-full overflow-hidden">
-  <div class="flex-grow overflow-y-auto pr-4">
+  <div class="flex-grow overflow-y-auto p-4">
     {#if isLoading}
-      <div class="text-center py-16 bg-white rounded-lg shadow-sm border">
+      <div class="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow border border-slate-200">
+        <!-- Spinner -->
+        <svg class="animate-spin h-8 w-8 text-slate-400 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
         <p class="text-slate-500">Memuat riwayat transaksi...</p>
       </div>
     {:else}
