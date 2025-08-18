@@ -37,58 +37,55 @@
       .join('');
 
     const { value: formValues } = await Swal.fire({
-      width: '36rem', // Mengurangi lebar agar lebih pas
+      width: '50rem',
       showConfirmButton: true,
       showCancelButton: true,
       confirmButtonText: 'Done',
       cancelButtonText: 'Cancel',
       customClass: {
         popup: 'p-8 rounded-2xl',
-        confirmButton:
-            'px-6 py-3 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
-        cancelButton:
-            'px-6 py-3 text-sm font-semibold text-red-600 bg-red-100 rounded-lg hover:bg-red-200',
-        actions: 'gap-4 w-full flex justify-end mt-8'
-        },
+        confirmButton: 'px-6 py-3 text-sm font-semibold text-white bg-violet-600 rounded-lg hover:bg-violet-700',
+        cancelButton: 'px-6 py-3 text-sm font-semibold text-red-600 bg-red-100 rounded-lg hover:bg-red-200',
+        actions: 'gap-4 w-full flex justify-end mt-8',
+      },
       buttonsStyling: false,
+      // --- PERBAIKAN LAYOUT HTML DI SINI ---
       html: `
-          <div class="w-full text-left">
-            <div style="max-height: 250px; overflow-y: auto; padding-right: 1rem;">
-              ${itemsHtml}
-            </div>
+        <div class="grid grid-cols-2 gap-8 text-left">
+          <div>
+            ${itemsHtml}
             <hr class="my-4"/>
-            <div class="flex justify-between font-bold text-lg text-slate-800">
+            <div class="flex justify-between font-bold text-lg">
               <span>TOTAL</span>
               <span>${formatCurrency(total)}</span>
             </div>
-
-            <div class="mt-6 grid grid-cols-2 gap-4">
-                <div>
-                  <label for="swal-payment-method" class="mb-2 block font-semibold text-slate-700">Metode Pembayaran</label>
-                  <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                    <option value="Cash" selected>Cash</option>
-                    <option value="QRIS">QRIS</option>
-                    <option value="Card">Card</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="swal-payment-status" class="mb-2 block font-semibold text-slate-700">Status Pembayaran</label>
-                  <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
-                    <option value="Lunas" selected>Lunas</option>
-                    <option value="Pending">Belum Lunas</option>
-                  </select>
-                </div>
+          </div>
+          <div class="flex flex-col gap-6">
+            <div class="flex flex-col">
+              <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
+              <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
+                <option value="Tunai" selected>Cash</option>
+                <option value="QRIS">QRIS</option>
+                <option value="Kartu">Card</option>
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
+              <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
+                <option value="Lunas" selected>Lunas</option>
+                <option value="Pending">Belum Lunas</option>
+              </select>
             </div>
           </div>
-        `,
+        </div>
+      `,
+      // --- AKHIR PERBAIKAN ---
       preConfirm: () => {
-          const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement)
-              .value;
-          const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement)
-              .value;
-          return { paymentMethod, paymentStatus };
-      }
-  });
+        const paymentMethod = (document.getElementById('swal-payment-method') as HTMLSelectElement).value;
+        const paymentStatus = (document.getElementById('swal-payment-status') as HTMLSelectElement).value;
+        return { paymentMethod, paymentStatus };
+      },
+    });
 
     if (formValues) {
       const token = localStorage.getItem('accessToken');
