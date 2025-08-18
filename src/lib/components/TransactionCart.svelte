@@ -1,10 +1,12 @@
 <script lang="ts">
   import { cart } from '$lib/stores';
   import Swal from 'sweetalert2';
-  import { invalidateAll } from '$app/navigation';
+  import { invalidateAll } from '$app/navigation'; // <-- DITAMBAHKAN
 
+  // $: total reaktif, tidak perlu diubah.
   $: total = $cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  // formatCurrency tidak perlu diubah.
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -15,6 +17,7 @@
 
   const handleTransaction = async () => {
     if ($cart.length === 0) {
+      // Pengecekan keranjang kosong tidak perlu diubah.
       Swal.fire({
         icon: 'error',
         title: 'Keranjang Kosong',
@@ -23,6 +26,11 @@
       return;
     }
 
+    // --- PERBAIKAN PADA TAMPILAN MODAL ---
+    // Daripada membuat HTML manual, lebih baik kirim data ke komponen Svelte.
+    // Tapi untuk menjaga struktur Anda, kita perbaiki bagian interaktivitasnya saja.
+    // Tombol minus di dalam HTML Swal tidak interaktif, ini hanya tampilan.
+    // Logika untuk mengurangi item harus ada di keranjang utama.
     const itemsHtml = $cart
       .map(
         (item: any) => `
@@ -31,13 +39,14 @@
             <p class="font-semibold text-slate-800">${item.name}</p>
             <p class="text-sm text-slate-500">${item.quantity} x ${formatCurrency(item.price)}</p>
           </div>
-          <button class="text-red-500 hover:text-red-700 font-bold text-xl">&minus;</button>
-        </div>
+          </div>
       `
       )
       .join('');
+    // --- AKHIR PERBAIKAN ---
 
     const { value: formValues } = await Swal.fire({
+      // Pengaturan Swal.fire tidak perlu diubah.
       width: '50rem',
       showConfirmButton: true,
       showCancelButton: true,
@@ -63,7 +72,7 @@
           <div class="w-1/2 flex flex-col gap-6">
             <div class="flex flex-col">
               <label for="swal-payment-method" class="mb-2 font-semibold text-slate-700">Metode Pembayaran</label>
-              <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300">
+              <select id="swal-payment-method" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
                 <option value="Tunai" selected>Cash</option>
                 <option value="QRIS">QRIS</option>
                 <option value="Kartu">Card</option>
@@ -71,7 +80,7 @@
             </div>
             <div class="flex flex-col">
               <label for="swal-payment-status" class="mb-2 font-semibold text-slate-700">Status Pembayaran</label>
-              <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300">
+              <select id="swal-payment-status" class="w-full p-3 border rounded-lg border-slate-300 swal2-select">
                 <option value="Lunas" selected>Lunas</option>
                 <option value="Pending">Belum Lunas</option>
               </select>
@@ -92,16 +101,16 @@
 
       // --- PERBAIKAN UTAMA ADA DI SINI ---
 
-      // 1. Siapkan array item sesuai skema TransactionItemCreate
+      // 1. Siapkan array item sesuai skema Pydantic di FastAPI
       const itemsForApi = $cart.map((item: any) => ({
         item_id: String(item.id),
-        item_type: item.type,
+        item_type: item.type, // 'product' atau 'service'
         quantity: item.quantity
       }));
 
-      // 2. Buat payload dengan NAMA FIELD 'items' YANG BENAR
+      // 2. Buat payload lengkap untuk dikirim ke API
       const payload = {
-        items: itemsForApi, // <-- INI PERBAIKANNYA
+        items: itemsForApi,
         payment_method: formValues.paymentMethod,
         payment_status: formValues.paymentStatus
       };
@@ -119,9 +128,16 @@
         });
 
         if (response.ok) {
-          await Swal.fire('Berhasil!', 'Transaksi telah berhasil disimpan.', 'success');
-          cart.reset();
+          // --- PERBAIKAN UNTUK RESET TAMPILAN ---
+          Swal.fire('Berhasil!', 'Transaksi telah berhasil disimpan.', 'success');
+          cart.reset(); // Mengosongkan keranjang di store
+          
+          // Memaksa SvelteKit untuk memuat ulang data di semua halaman aktif.
+          // Ini akan otomatis memperbarui daftar "Riwayat Transaksi" jika sedang dibuka.
+          await invalidateAll();
+          // --- AKHIR PERBAIKAN ---
         } else {
+          // Penanganan error sudah cukup baik, tidak perlu diubah.
           const errorData = await response.json();
           let errorHtml = 'Gagal menyimpan transaksi.';
           if (errorData.detail && Array.isArray(errorData.detail)) {
@@ -139,7 +155,7 @@
   };
 </script>
 
-<div class="flex flex-col h-screen w-[350px] bg-slate-50 border-l border-slate-200 p-4">
+<div class="flex flex-col h-full bg-slate-50 border-l border-slate-200 p-4">
   <div class="pr-2 overflow-y-auto flex-grow">
     {#if $cart.length === 0}
       <p class="mt-8 text-center text-slate-400">Keranjang masih kosong</p>
@@ -166,8 +182,9 @@
       <span class="text-lg font-bold text-slate-800">{formatCurrency(total)}</span>
     </div>
     <button
-      class="w-full p-4 font-bold text-white transition rounded-lg bg-violet-600 hover:bg-violet-700"
+      class="w-full p-4 font-bold text-white transition rounded-lg bg-violet-600 hover:bg-violet-700 disabled:bg-slate-400"
       on:click={handleTransaction}
+      disabled={$cart.length === 0}
     >
       TRANSAKSI
     </button>
