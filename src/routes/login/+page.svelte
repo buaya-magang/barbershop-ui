@@ -2,6 +2,7 @@
   import Swal from 'sweetalert2';
   import LoginImage from '$lib/assets/logo-login.png';
   import { viewport } from '$lib/viewport.js';
+  import { goto } from '$app/navigation'; // <-- 1. Impor `goto` dari SvelteKit
 
   let username = '';
   let password = '';
@@ -28,25 +29,23 @@
         const token = data.access_token;
         localStorage.setItem('accessToken', token);
 
-        // --- BAGIAN INI DIPERBAIKI ---
-        // 1. Decode token untuk mendapatkan role
+        // --- BAGIAN YANG DIPERBAIKI ---
+
+        // Langsung decode token untuk mendapatkan role
         const payload = JSON.parse(atob(token.split('.')[1]));
         const userRole = payload.role;
+        
+        // Hapus SweetAlert sukses
+        // await Swal.fire({...}); // <-- Baris ini dan isinya dihapus
 
-        await Swal.fire({
-          title: 'Login Berhasil!',
-          text: `Anda akan diarahkan ke halaman ${userRole}.`,
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
-        // 2. Arahkan pengguna berdasarkan rolenya secara langsung
+        // Langsung arahkan pengguna berdasarkan rolenya
         if (userRole === 'admin') {
-          window.location.href = '/admin';
+          // 2. Gunakan `goto` untuk navigasi yang lebih mulus
+          await goto('/admin'); 
         } else {
-          window.location.href = '/cashier';
+          await goto('/cashier');
         }
+
         // --- AKHIR PERBAIKAN ---
 
       } else {
@@ -69,15 +68,14 @@
     }
   };
 </script>
+
 <div class="grid w-full min-h-screen md:grid-cols-2">
-  <!-- Kolom kiri -->
   <div class="items-center justify-center hidden bg-violet-50 md:flex">
     <div class="p-8 text-center max-w-md">
       <p use:viewport class="fade-in-up text-4xl font-bold text-violet-800 mb-8 delay-150">
         Barbersh.OP
       </p>
 
-      <!-- Logo melayang -->
       <img
         use:viewport
         src="{LoginImage}"
@@ -96,7 +94,6 @@
     </div>
   </div>
 
-  <!-- Kolom kanan -->
   <div class="flex items-center justify-center p-6 bg-slate-100 md:p-12">
     <div class="w-full max-w-sm md:-mt-16">
       <h2
