@@ -41,8 +41,4 @@
       <TransactionHistory transactions={transactions} />
     {/if}
   </div>
-
-  <aside class="flex-shrink-0">
-    <TransactionCart />
-  </aside>
 </div>
