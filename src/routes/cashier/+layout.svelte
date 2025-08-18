@@ -30,7 +30,7 @@
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
-    goto('/');
+    goto('/login');
   };
 </script>
 
