@@ -14,26 +14,22 @@
 </script>
 
 <div class="flex h-full w-full flex-col lg:flex-row gap-6">
-  
   <!-- Kolom Produk -->
-  <div class="flex flex-grow flex-col gap-4 px-4"> <!-- padding global -->
-    
+  <div class="flex flex-grow flex-col gap-4 px-4">
     <!-- Search -->
     <input
       type="text"
       placeholder="Cari produk atau layanan..."
       bind:value={searchQuery}
-      class="w-full rounded-lg border border-slate-300 bg-white p-4"
+      class="w-full rounded-lg border border-slate-300 bg-white p-3"
     />
 
     <!-- Grid Produk -->
     <ProductGrid items={filteredItems} />
-
   </div>
 
   <!-- Sidebar / Cart -->
   <aside class="w-full lg:w-[350px] flex-shrink-0 px-4 lg:px-0">
     <TransactionCart />
   </aside>
-
 </div>
