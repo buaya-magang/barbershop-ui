@@ -19,17 +19,19 @@
 
     function formatDate(dateString: string) {
       try {
-        const date = new Date(dateString);
+        const utcDate = new Date(dateString);
+        // tambah offset +7 jam
+        const wibDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
 
         return new Intl.DateTimeFormat("id-ID", {
           dateStyle: "medium",
-          timeStyle: "short",
-          timeZone: "Asia/Jakarta", // selalu paksa WIB
-        }).format(date);
+          timeStyle: "short"
+        }).format(wibDate);
       } catch (e) {
         return "Format tanggal salah";
       }
     }
+
 
 </script>
 
