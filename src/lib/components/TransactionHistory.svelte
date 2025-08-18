@@ -17,22 +17,20 @@
     }).format(value);
   }
 
-    function formatDate(dateString: string) {
-      try {
-        const utcDate = new Date(dateString);
-        // tambah offset +7 jam
-        const wibDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
+  function formatDate(dateString: string) {
+    try {
+      const utcDate = new Date(dateString);
+      // tambah offset +7 jam
+      const wibDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
 
-        return new Intl.DateTimeFormat("id-ID", {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }).format(wibDate);
-      } catch (e) {
-        return "Format tanggal salah";
-      }
+      return new Intl.DateTimeFormat("id-ID", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }).format(wibDate);
+    } catch (e) {
+      return "Format tanggal salah";
     }
-
-
+  }
 </script>
 
 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
@@ -77,7 +75,9 @@
                 <div class="grid gap-2">
                   {#each trx.details as detail}
                     <div class="flex justify-between items-center p-2 bg-white rounded-lg shadow-sm border text-slate-700">
-                      <span>{detail.quantity}x (ID: {detail.service_id || detail.product_id})</span>
+                      <span>
+                        {detail.quantity}x {detail.service_name || detail.product_name || 'Unknown Item'}
+                      </span>
                       <span class="font-medium">{formatCurrency(detail.price_at_transaction)}</span>
                     </div>
                   {/each}
