@@ -76,12 +76,12 @@
             </div>
           </div>
         {/if}
-        <button
-          on:click={handleLogout}
-          class="hidden rounded-full bg-red-100 px-6 py-3 font-semibold text-red-600 transition hover:bg-red-200 sm:block"
-        >
-          Logout
-        </button>
+      <button
+        on:click={handleLogout}
+        class="hidden items-center gap-2 rounded-full bg-white p-2 pr-4 shadow-inner ring-1 ring-slate-200 font-semibold text-red-600 transition hover:bg-red-100 sm:flex"
+      >
+        Logout
+      </button>
       </div>
     </div>
   </header>
