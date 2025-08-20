@@ -7,23 +7,39 @@
   let error: string | null = null;
 
   const apiUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/dashboard/summary";
-  const countsUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/dashboard/counts";
+  const servicesUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/services";
+  const productsUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/products";
+  const usersUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/users";
 
   onMount(async () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("Token tidak ditemukan, silakan login kembali.");
 
-      const [summaryRes, countsRes] = await Promise.all([
-        fetch(apiUrl, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(countsUrl, { headers: { Authorization: `Bearer ${token}` } })
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const [summaryRes, servicesRes, productsRes, usersRes] = await Promise.all([
+        fetch(apiUrl, { headers }),
+        fetch(servicesUrl, { headers }),
+        fetch(productsUrl, { headers }),
+        fetch(usersUrl, { headers })
       ]);
 
       if (!summaryRes.ok) throw new Error("Gagal memuat data dashboard");
-      if (!countsRes.ok) throw new Error("Gagal memuat data jumlah");
+      if (!servicesRes.ok) throw new Error("Gagal memuat data layanan");
+      if (!productsRes.ok) throw new Error("Gagal memuat data produk");
+      if (!usersRes.ok) throw new Error("Gagal memuat data pengguna");
 
       summary = await summaryRes.json();
-      counts = await countsRes.json();
+      const services = await servicesRes.json();
+      const products = await productsRes.json();
+      const users = await usersRes.json();
+
+      counts = {
+        services: services.length,
+        products: products.length,
+        users: users.length
+      };
     } catch (e: any) {
       error = e.message;
     } finally {
