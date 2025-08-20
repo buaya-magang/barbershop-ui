@@ -37,7 +37,7 @@
       <!-- Menu Admin -->
       <nav class="hidden items-center gap-6 md:flex">
         <a 
-          href="/admin/services" 
+          href="/admin" 
           class="pb-2 font-semibold transition"
           class:border-b-2={$page.url.pathname.startsWith('/admin')}
           class:border-violet-600={$page.url.pathname.startsWith('/admin')}
