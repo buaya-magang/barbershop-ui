@@ -25,7 +25,7 @@
     />
 
     <!-- Grid Produk dengan scroll sendiri -->
-    <div class="flex-1 overflow-y-auto max-h-[calc(100vh-140px)]">
+    <div class="flex-1 overflow-y-auto max-h-[calc(100vh-140px)] no-scrollbar">
       <ProductGrid items={filteredItems} />
     </div>
   </div>
