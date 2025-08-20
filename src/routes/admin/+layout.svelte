@@ -39,13 +39,24 @@
         <a 
           href="/admin/services" 
           class="pb-2 font-semibold transition"
+          class:border-b-2={$page.url.pathname.startsWith('/admin')}
+          class:border-violet-600={$page.url.pathname.startsWith('/admin')}
+          class:text-violet-600={$page.url.pathname.startsWith('/admin')}
+          class:text-slate-500={!$page.url.pathname.startsWith('/admin')}
+          class:hover:text-violet-600={!$page.url.pathname.startsWith('/admin')}
+        >
+        Dashboard
+        </a>
+        <a 
+          href="/admin/services" 
+          class="pb-2 font-semibold transition"
           class:border-b-2={$page.url.pathname.startsWith('/admin/services')}
           class:border-violet-600={$page.url.pathname.startsWith('/admin/services')}
           class:text-violet-600={$page.url.pathname.startsWith('/admin/services')}
           class:text-slate-500={!$page.url.pathname.startsWith('/admin/services')}
           class:hover:text-violet-600={!$page.url.pathname.startsWith('/admin/services')}
         >
-          Dashboard Layanan
+        Layanan
         </a>
 
         <a 
@@ -57,7 +68,7 @@
           class:text-slate-500={!$page.url.pathname.startsWith('/admin/products')}
           class:hover:text-violet-600={!$page.url.pathname.startsWith('/admin/products')}
         >
-          Dashboard Produk
+        Produk
         </a>
 
         <a 
@@ -69,7 +80,7 @@
           class:text-slate-500={!$page.url.pathname.startsWith('/admin/users')}
           class:hover:text-violet-600={!$page.url.pathname.startsWith('/admin/users')}
         >
-          Dashboard Pengguna
+        Pengguna
         </a>
       </nav>
 
