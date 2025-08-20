@@ -1,45 +1,57 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let summary: { today_revenue: number; today_transactions_count: number } | null = null;
   let transactions: any[] = [];
-  let loading = true;
-  let error: string | null = null;
+  let errorMessage: string | null = null;
 
-  const baseUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
+  // base url dari environment variable
+  const apiUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
 
-  onMount(async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) throw new Error("Token tidak ditemukan, silakan login kembali.");
+  // ambil token dari localStorage
+  let token: string | null = localStorage.getItem("accessToken");
 
-      // fetch summary
-      const summaryRes = await fetch(baseUrl + "/dashboard/summary", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!summaryRes.ok) throw new Error("Gagal memuat data dashboard");
-      summary = await summaryRes.json();
-
-      // fetch transactions
-      const trxRes = await fetch(baseUrl + "/transactions", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!trxRes.ok) throw new Error("Gagal memuat data transaksi");
-      transactions = await trxRes.json();
-
-    } catch (e: any) {
-      error = e.message;
-    } finally {
-      loading = false;
+  async function fetchTransactions() {
+    if (!token) {
+      errorMessage = "Belum login, token tidak ditemukan.";
+      return;
     }
+
+    try {
+      const res = await fetch(`${apiUrl}/transactions/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Gagal fetch: ${res.status}`);
+      }
+
+      transactions = await res.json();
+    } catch (err) {
+      errorMessage = (err as Error).message;
+    }
+  }
+
+  onMount(() => {
+    fetchTransactions();
   });
 </script>
+
+{#if errorMessage}
+  <p class="text-red-600">{errorMessage}</p>
+{:else if transactions.length === 0}
+  <p>Loading transaksi...</p>
+{:else}
+  <ul>
+    {#each transactions as trx}
+      <li>{trx.product_name} — {trx.amount}</li>
+    {/each}
+  </ul>
+{/if}
+
 
 <div class="p-8">
   <h1 class="text-3xl font-bold text-slate-800">Admin Dashboard</h1>
