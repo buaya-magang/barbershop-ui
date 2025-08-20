@@ -87,7 +87,8 @@
     </div>
   </header>
 
-  <main class="flex-grow overflow-y-auto p-4 md:p-8">
+  <main class="flex-grow overflow-y-auto p-4 md:p-8 no-scrollbar">
     <slot />
   </main>
+
 </div>

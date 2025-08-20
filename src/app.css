@@ -29,3 +29,12 @@
   animation: float 6s ease-in-out infinite;
 }
 
+/* Hilangkan scrollbar tapi masih bisa scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE dan Edge */
+  scrollbar-width: none;     /* Firefox */
+}
