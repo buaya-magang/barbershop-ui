@@ -7,21 +7,56 @@
 
   // pakai base URL dari .env
   const apiUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/dashboard/summary";
+  const transaksiUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/transactions";
+
+  let layananCount = 0;
+  let produkCount = 0;
+  let userCount = 0;
 
   onMount(async () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("Token tidak ditemukan, silakan login kembali.");
 
+      // Ambil summary
       const res = await fetch(apiUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (!res.ok) throw new Error("Gagal memuat data dashboard");
-
       summary = await res.json();
+
+      // Ambil transaksi
+      const trxRes = await fetch(transaksiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!trxRes.ok) throw new Error("Gagal memuat data transaksi");
+      const transaksi = await trxRes.json();
+
+      // Hitung jumlah unik layanan, produk, user dari transaksi
+      const layananSet = new Set();
+      const produkSet = new Set();
+      const userSet = new Set();
+
+      for (const trx of transaksi) {
+        if (Array.isArray(trx.services)) {
+          trx.services.forEach((s: any) => layananSet.add(s.id || s._id || s));
+        }
+        if (Array.isArray(trx.products)) {
+          trx.products.forEach((p: any) => produkSet.add(p.id || p._id || p));
+        }
+        if (trx.user) {
+          userSet.add(trx.user.id || trx.user._id || trx.user);
+        }
+      }
+
+      layananCount = layananSet.size;
+      produkCount = produkSet.size;
+      userCount = userSet.size;
+
     } catch (e: any) {
       error = e.message;
     } finally {
@@ -73,21 +108,21 @@
     </div>
   {/if}
 
-  <!-- Menu Navigasi Admin -->
+  <!-- Menu Navigasi Admin dengan jumlah dari transaksi -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <a href="/admin/services" class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition group border border-slate-200">
+    <a href="/admin/services" class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition group border border-slate-200 flex flex-col items-start">
       <h2 class="text-xl font-semibold text-slate-800 group-hover:text-violet-600">Manajemen Layanan</h2>
-      <p class="text-slate-500 mt-2">Tambah, ubah, atau hapus layanan barbershop.</p>
+      <p class="text-slate-500 mt-2">Jumlah layanan unik di transaksi: <span class="font-bold text-violet-600">{layananCount}</span></p>
     </a>
     
-    <a href="/admin/products" class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition group border border-slate-200">
+    <a href="/admin/products" class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition group border border-slate-200 flex flex-col items-start">
       <h2 class="text-xl font-semibold text-slate-800 group-hover:text-violet-600">Manajemen Produk</h2>
-      <p class="text-slate-500 mt-2">Tambah, ubah, atau hapus produk barbershop.</p>
+      <p class="text-slate-500 mt-2">Jumlah produk unik di transaksi: <span class="font-bold text-emerald-600">{produkCount}</span></p>
     </a>
 
-    <a href="/admin/users" class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition group border border-slate-200">
+    <a href="/admin/users" class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition group border border-slate-200 flex flex-col items-start">
       <h2 class="text-xl font-semibold text-slate-800 group-hover:text-violet-600">Manajemen Pengguna</h2>
-      <p class="text-slate-500 mt-2">Tambah atau hapus akun pengguna.</p>
+      <p class="text-slate-500 mt-2">Jumlah user unik di transaksi: <span class="font-bold text-pink-600">{userCount}</span></p>
     </a>
   </div>
 </div>
