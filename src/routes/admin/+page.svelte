@@ -1,57 +1,34 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let transactions: any[] = [];
-  let errorMessage: string | null = null;
+  let summary: { today_revenue: number; today_transactions_count: number } | null = null;
+  let loading = true;
+  let error: string | null = null;
 
-  // base url dari environment variable
-  const apiUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL;
+  // pakai base URL dari .env
+  const apiUrl = import.meta.env.VITE_PUBLIC_API_BASE_URL + "/dashboard/summary";
 
-  // ambil token dari localStorage
-  let token: string | null = localStorage.getItem("accessToken");
-
-  async function fetchTransactions() {
-    if (!token) {
-      errorMessage = "Belum login, token tidak ditemukan.";
-      return;
-    }
-
+  onMount(async () => {
     try {
-      const res = await fetch(`${apiUrl}/transactions/`, {
-        method: "GET",
+      const token = localStorage.getItem("accessToken");
+      if (!token) throw new Error("Token tidak ditemukan, silakan login kembali.");
+
+      const res = await fetch(apiUrl, {
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (!res.ok) {
-        throw new Error(`Gagal fetch: ${res.status}`);
-      }
+      if (!res.ok) throw new Error("Gagal memuat data dashboard");
 
-      transactions = await res.json();
-    } catch (err) {
-      errorMessage = (err as Error).message;
+      summary = await res.json();
+    } catch (e: any) {
+      error = e.message;
+    } finally {
+      loading = false;
     }
-  }
-
-  onMount(() => {
-    fetchTransactions();
   });
 </script>
-
-{#if errorMessage}
-  <p class="text-red-600">{errorMessage}</p>
-{:else if transactions.length === 0}
-  <p>Loading transaksi...</p>
-{:else}
-  <ul>
-    {#each transactions as trx}
-      <li>{trx.product_name} — {trx.amount}</li>
-    {/each}
-  </ul>
-{/if}
-
 
 <div class="p-8">
   <h1 class="text-3xl font-bold text-slate-800">Admin Dashboard</h1>
@@ -93,40 +70,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Daftar transaksi terbaru -->
-    <div class="bg-white rounded-2xl shadow border border-slate-200 p-6 mb-8">
-      <h2 class="text-xl font-semibold text-slate-800 mb-4">Transaksi Terbaru</h2>
-      {#if transactions.length > 0}
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b text-slate-600">
-              <th class="py-2">ID</th>
-              <th class="py-2">Tanggal</th>
-              <th class="py-2">Total</th>
-              <th class="py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each transactions.slice(0, 5) as trx}
-              <tr class="border-b last:border-0 hover:bg-slate-50">
-                <td class="py-2">{trx.id}</td>
-                <td class="py-2">{new Date(trx.created_at).toLocaleString()}</td>
-                <td class="py-2">Rp {trx.total.toLocaleString()}</td>
-                <td class="py-2">
-                  <span class="px-3 py-1 rounded-full text-xs font-semibold 
-                    {trx.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">
-                    {trx.status}
-                  </span>
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      {:else}
-        <p class="text-slate-500">Belum ada transaksi.</p>
-      {/if}
     </div>
   {/if}
 
